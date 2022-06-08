@@ -99,7 +99,6 @@ class CellPanel(wx.Panel):
             else:
                 candidate_text.SetForegroundColour(self.deactive_color)
 
-
     def on_show(self):
         """show"""
         # debug print
@@ -162,6 +161,11 @@ class CellPanel(wx.Panel):
                     self.set_candidate(index + 1, new_candidate)
             self.on_show()
 
+    def set_cell_model(self, cell_model):
+        """set cell model"""
+        # debug print
+        self.cell_model = cell_model
+
 
 class SquarePanel(wx.Panel):
     """Square View"""
@@ -196,10 +200,20 @@ class SquarePanel(wx.Panel):
         for cell in self.cells:
             cell.update_numbers()
 
+    def set_group_model(self, group_model):
+        """set group model"""
+        self.group_model = group_model
+        self.cell_models = group_model.get_cell_models()
+        for cell_index in range(len(self.cells)):
+            row_index = cell_index // 3
+            col_index = cell_index % 3
+            cell_model = self.cell_models[row_index][col_index] 
+            self.cells[cell_index].set_cell_model(cell_model)
+
 
 class Boad(wx.Panel):
     """"Boad"""
-    def __init__(self, init_data, data_model, *args, **kwargs):
+    def __init__(self, data_model, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.data_model = data_model
@@ -235,10 +249,21 @@ class Boad(wx.Panel):
         self.Update()
         self.Refresh()
 
+    def update_data_model(self):
+        """update data model"""
+        self.square_group_models = self.data_model.get_square_groups()
+
+        for group_index in range(len(self.groups)):
+            row_group = group_index // 3
+            col_group = group_index % 3
+
+            group_model = self.square_group_models[row_group][col_group]
+            self.groups[group_index].set_group_model(group_model)
+
 
 class MainFrame(wx.Frame):
     """MainFrame"""
-    def __init__(self, init_data, data_model, *args, **kwargs):
+    def __init__(self, data_model, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.data_model = data_model
@@ -247,6 +272,8 @@ class MainFrame(wx.Frame):
             parent=self,
             id=wx.ID_ANY
         )
+
+        ## main panel
         self.main_panel = wx.Panel(
             parent=self.base_panel,
             id=wx.ID_ANY
@@ -254,7 +281,6 @@ class MainFrame(wx.Frame):
         self.main_component = Boad(
             parent=self.main_panel,
             id=wx.ID_ANY,
-            init_data=init_data,
             data_model=data_model
         )
         status_text = 'Status: '
@@ -265,6 +291,7 @@ class MainFrame(wx.Frame):
             label=status_text
         )
 
+        ## side panel
         self.side_panel = wx.Panel(
             parent=self.base_panel,
             id=wx.ID_ANY,
@@ -273,6 +300,8 @@ class MainFrame(wx.Frame):
             parent=self.side_panel,
             label='Change show mode'
         )
+
+        ### side panel button
         self.select_button = wx.Button(
             parent=self.side_panel,
             label='候補が絞られているものを選択'
@@ -308,12 +337,6 @@ class MainFrame(wx.Frame):
         self.side_panel.SetBackgroundColour(wx.BLACK)
 
         # Layout
-        ## base
-        layout = wx.BoxSizer(wx.HORIZONTAL)
-        layout.Add(self.main_panel, flag=wx.EXPAND, proportion=1)
-        layout.Add(self.side_panel)
-        self.base_panel.SetSizer(layout)
-
         ## main
         main_layout = wx.BoxSizer(wx.VERTICAL)
         main_layout.Add(self.main_component, flag=wx.EXPAND,proportion=1)
@@ -332,6 +355,24 @@ class MainFrame(wx.Frame):
         side_layout.Add(self.compute_button_3, flag=wx.EXPAND)
         side_layout.Add(self.compute_auto_button, flag=wx.EXPAND)
         self.side_panel.SetSizer(side_layout)
+
+        ## base
+        layout = wx.BoxSizer(wx.HORIZONTAL)
+        layout.Add(self.main_panel, flag=wx.EXPAND, proportion=1)
+        layout.Add(self.side_panel)
+        self.base_panel.SetSizer(layout)
+
+        ## menu
+        # パネルを配置してからでないとうまく表示されないため、他のsizerがセットされたあとに
+        # メニューを追加
+        menu = wx.Menu()
+        menu.AppendSeparator()
+        menu_init = menu.Append(1, '初期状態に戻す')
+        menu_create = menu.Append(2, '新しい問題を設定')
+        menu_bar = wx.MenuBar()
+        menu_bar.Append(menu, 'メニュー')
+        self.SetMenuBar(menu_bar)
+        self.Bind(wx.EVT_MENU, self.on_reset, menu_init)
 
         # Event
         self.side_button.Bind(
@@ -456,6 +497,18 @@ class MainFrame(wx.Frame):
         print('complete to auto computed')
         print(f'Turn Count: {count}')
 
+    def on_reset(self, _):
+        """元の初期状態に戻す"""
+        self.data_model.reset()
+        self.update_data_model()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to reset')
+
+    def update_data_model(self):
+        """update data model"""
+        self.main_component.update_data_model()
+
 
 
 def main():
@@ -477,20 +530,19 @@ def main():
     # 各列を数字のみの文字列で設定します。
     # 空白は0として設定します。
     base_data = [
-        '001040009',
-        '000000507',
-        '009086000',
-        '708000000',
-        '000007930',
-        '900060720',
-        '204000801',
-        '010000005',
-        '007001402',
+        '160200495',
+        '000408000',
+        '000000038',
+        '670050020',
+        '000092600',
+        '300000750',
+        '030000001',
+        '007800000',
+        '096300007',
     ]
     base_data = [[int(value) for value in list(row)] for row in base_data]
     base_data = [[int(v) for v in list(row)] for row in base_data]
     data_model = DataModel(base_data)
-    data = [[str(cell) if cell > 0 else '' for cell in row] for row in base_data]
 
     # debug print
     # print(data)
@@ -504,11 +556,11 @@ def main():
         title='Application',
         size=(700, 500),
         pos=coordinate,
-        init_data=data,
         data_model=data_model)
     frame.Show()
     app.SetTopWindow(frame)
     app.MainLoop()
+
 
 
 if __name__ == '__main__':

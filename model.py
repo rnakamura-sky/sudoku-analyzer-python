@@ -240,10 +240,23 @@ class DataModel:
     """DataModel"""
     def __init__(self, data: List[List[int]]):
         # ステータス用のモデルクラス設定
-        self.status_model = StatusModel()
+        self.init_data = data
 
+        self.status_model = StatusModel()
+        self.cells = None
+
+        # create groups
+        self.square_groups = []
+        self.vertical_groups = []
+        self.horizontal_groups = []
+
+        self.initialize(data)
+
+    def initialize(self, init_data):
+        """データの初期設定"""
+        self.init_data = init_data
         self.cells = [
-            [CellModel(cell, self.status_model) for cell in row] for row in data]
+            [CellModel(cell, self.status_model) for cell in row] for row in init_data]
 
         # create groups
         ## square groups
@@ -276,6 +289,11 @@ class DataModel:
                         for j in range(3)]
                 hgroups.append(HorizontalGroupModel(data))
             self.horizontal_groups.append(hgroups)
+        self.status_model.turn_start()
+
+    def reset(self):
+        """最初の状態(初期データ)に戻す"""
+        self.initialize(self.init_data)
 
     def check_to_complete(self) -> bool:
         """数独を解き終わっているか確認する処理"""
