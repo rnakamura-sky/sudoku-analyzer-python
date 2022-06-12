@@ -3,7 +3,6 @@
 from typing import List
 import re
 
-import pprint
 
 def check_input_data(data: str) -> bool:
     """文字列データを入力入力データに変換できるかチェックする
@@ -38,3 +37,8 @@ def string2data(str_data:str) -> List[List[int]]:
         data.append([int(v) for v in text[index * 9: (index+1) * 9]])
     return data
 
+def data2string(data: List[List[int]], sep: str='\n') -> str:
+    """data to string"""
+    tmp = [''.join([str(v) for v in row]) for row in data]
+    result = sep.join(tmp)
+    return result

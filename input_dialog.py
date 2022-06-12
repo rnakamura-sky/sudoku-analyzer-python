@@ -6,12 +6,14 @@ import utils
 
 class InputDialog(wx.Dialog):
     """Input Dialog"""
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, init_value:str=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.result = False
 
         self.text = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        if init_value is not None:
+            self.text.SetValue(init_value)
         button = wx.Button(self, wx.ID_YES, 'OK')
         self.Bind(wx.EVT_BUTTON, self.click_button, button)
 

@@ -305,6 +305,10 @@ class DataModel:
                     return False
         return True
 
+    def get_init_data(self):
+        """get init data"""
+        return self.init_data
+
     def get_square_groups(self) -> List[List[SquareGroupModel]]:
         """get square_groups"""
         return self.square_groups

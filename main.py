@@ -370,11 +370,13 @@ class MainFrame(wx.Frame):
         menu.AppendSeparator()
         menu_init = menu.Append(1, '初期状態に戻す')
         menu_create = menu.Append(2, '新しい問題を設定')
+        menu_update = menu.Append(3, '問題を修正')
         menu_bar = wx.MenuBar()
         menu_bar.Append(menu, 'メニュー')
         self.SetMenuBar(menu_bar)
         self.Bind(wx.EVT_MENU, self.on_reset, menu_init)
         self.Bind(wx.EVT_MENU, self.on_initialize_from_dialog, menu_create)
+        self.Bind(wx.EVT_MENU, self.on_update_data, menu_update)
 
         # Event
         self.side_button.Bind(
@@ -510,6 +512,30 @@ class MainFrame(wx.Frame):
     def on_initialize_from_dialog(self, _):
         """ダイアログで新しいデータをセット"""
         dialog = InputDialog(
+            parent=None,
+            id=wx.ID_ANY,
+            title='Title',
+            size=(300, 340)
+        )
+        dialog.ShowModal()
+        result = dialog.get_result()
+        if result:
+            data = dialog.get_text()
+            data = utils.string2data(data)
+            self.data_model.initialize(data)
+            self.update_data_model()
+            self.main_component.update_numbers()
+            self.update_status()
+            print('Input')
+        else:
+            print('Cancel')
+        dialog.Destroy()
+
+    def on_update_data(self, _):
+        """on update data"""
+        str_data = utils.data2string(self.data_model.get_init_data())
+        dialog = InputDialog(
+            init_value=str_data,
             parent=None,
             id=wx.ID_ANY,
             title='Title',
