@@ -252,7 +252,7 @@ class DataModel:
 
         self.initialize(data)
 
-    def initialize(self, init_data):
+    def initialize(self, init_data: List[List[int]]):
         """データの初期設定"""
         self.init_data = init_data
         self.cells = [

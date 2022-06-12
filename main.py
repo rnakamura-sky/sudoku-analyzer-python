@@ -3,7 +3,8 @@
 import wx
 
 from model import DataModel
-
+from input_dialog import InputDialog
+import utils
 
 class CellPanel(wx.Panel):
     """CellView"""
@@ -373,6 +374,7 @@ class MainFrame(wx.Frame):
         menu_bar.Append(menu, 'メニュー')
         self.SetMenuBar(menu_bar)
         self.Bind(wx.EVT_MENU, self.on_reset, menu_init)
+        self.Bind(wx.EVT_MENU, self.on_initialize_from_dialog, menu_create)
 
         # Event
         self.side_button.Bind(
@@ -505,10 +507,31 @@ class MainFrame(wx.Frame):
         self.update_status()
         print('complete to reset')
 
+    def on_initialize_from_dialog(self, _):
+        """ダイアログで新しいデータをセット"""
+        dialog = InputDialog(
+            parent=None,
+            id=wx.ID_ANY,
+            title='Title',
+            size=(300, 340)
+        )
+        dialog.ShowModal()
+        result = dialog.get_result()
+        if result:
+            data = dialog.get_text()
+            data = utils.string2data(data)
+            self.data_model.initialize(data)
+            self.update_data_model()
+            self.main_component.update_numbers()
+            self.update_status()
+            print('Input')
+        else:
+            print('Cancel')
+        dialog.Destroy()
+
     def update_data_model(self):
         """update data model"""
         self.main_component.update_data_model()
-
 
 
 def main():
@@ -530,15 +553,15 @@ def main():
     # 各列を数字のみの文字列で設定します。
     # 空白は0として設定します。
     base_data = [
-        '160200495',
-        '000408000',
-        '000000038',
-        '670050020',
-        '000092600',
-        '300000750',
-        '030000001',
-        '007800000',
-        '096300007',
+        '000000007',
+        '026750039',
+        '000009010',
+        '600000003',
+        '000060408',
+        '400000070',
+        '042900001',
+        '360020084',
+        '580040300',
     ]
     base_data = [[int(value) for value in list(row)] for row in base_data]
     base_data = [[int(v) for v in list(row)] for row in base_data]
