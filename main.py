@@ -494,6 +494,7 @@ class MainFrame(wx.Frame):
 
             # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
             if count >= 50:
+                wx.MessageBox('問題を解くことができませんでした。')
                 break
 
         self.main_component.update_numbers()
