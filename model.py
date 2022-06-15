@@ -236,6 +236,10 @@ class HorizontalGroupModel(BaseGroupModel):
     """HorizontalGroupModel"""
     # TODO: 横列グループで特別に処理する処理は現状ありません。
 
+class CrossGroupModel(BaseGroupModel):
+    """CrossGroupModel"""
+    # TODO: クロスグループで特別に処理する処理は現状ありません。
+
 class DataModel:
     """DataModel"""
     def __init__(self, data: List[List[int]]):
@@ -249,6 +253,7 @@ class DataModel:
         self.square_groups = []
         self.vertical_groups = []
         self.horizontal_groups = []
+        self.cross_groups = []
 
         self.initialize(data)
 
@@ -289,6 +294,18 @@ class DataModel:
                         for j in range(3)]
                 hgroups.append(HorizontalGroupModel(data))
             self.horizontal_groups.append(hgroups)
+        ## cross groups
+        self.cross_groups = []
+        cgroups = []
+        data = [[self.cells[i + 3 * j][i + 3 * j]
+                for i in range(3)]
+                for j in range(3)]
+        cgroups.append(CrossGroupModel(data))
+        data = [[self.cells[i + 3 * j][8 - (i + 3 * j)]
+                for i in range(3)]
+                for j in range(3)]
+        cgroups.append(CrossGroupModel(data))
+        self.cross_groups.append(cgroups)
         self.status_model.turn_start()
 
     def reset(self):
@@ -314,12 +331,16 @@ class DataModel:
         return self.square_groups
 
     def get_vertical_groups(self) -> List[List[VerticalGroupModel]]:
-        """get matrix_format"""
+        """get vertical groups"""
         return self.vertical_groups
 
     def get_horizontal_groups(self) -> List[List[HorizontalGroupModel]]:
-        """get horizontal group"""
+        """get horizontal groups"""
         return self.horizontal_groups
+    
+    def get_cross_groups(self) -> List[List[CrossGroupModel]]:
+        """ get cross groups"""
+        return self.cross_groups
 
     def select_from_candidate(self) -> None:
         """候補が一つに絞られているセルの値を設定する処理"""
@@ -352,6 +373,12 @@ class DataModel:
             for vgroup in vgroup_row:
                 vgroup.select_from_candidate_in_group()
 
+    def select_from_candidate_in_cross(self) -> None:
+        """クロスグループ内で一つのセルにしか入らない値を設定する処理"""
+        for cgroup_row in self.cross_groups:
+            for cgroup in cgroup_row:
+                cgroup.select_from_candidate_in_group()
+
     def compute_square_candidate(self) -> None:
         """正方形内での候補値をチェックします。"""
         for sgroup_row in self.square_groups:
@@ -363,6 +390,12 @@ class DataModel:
         for vgroup_row in self.vertical_groups:
             for vgroup in vgroup_row:
                 vgroup.compute_candidate()
+
+    def compute_cross_candidate(self) -> None:
+        """クロスグループで候補値をチェックします。"""
+        for cgroup_row in self.cross_groups:
+            for cgroup in cgroup_row:
+                cgroup.compute_candidate()
 
     def compute_horizontal_candidate(self) -> None:
         """横列グループで候補値をチェックします。"""

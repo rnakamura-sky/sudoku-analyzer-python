@@ -319,6 +319,10 @@ class MainFrame(wx.Frame):
             parent=self.side_panel,
             label='横列で候補が絞られているものを選択'
         )
+        self.select_in_cross_button = wx.Button(
+            parent=self.side_panel,
+            label='クロスで候補が絞られているものを選択'
+        )
         self.compute_button_1 = wx.Button(
             parent=self.side_panel,
             label='正方形内での候補計算'
@@ -331,9 +335,17 @@ class MainFrame(wx.Frame):
             parent=self.side_panel,
             label='縦グループでの候補計算'
         )
+        self.compute_button_4 = wx.Button(
+            parent=self.side_panel,
+            label='クロスグループでの候補計算'
+        )
         self.compute_auto_button = wx.Button(
             parent=self.side_panel,
             label='全自動計算'
+        )
+        self.compute_auto_cross_button = wx.Button(
+            parent=self.side_panel,
+            label='全自動計算(クロス)'
         )
         self.side_panel.SetBackgroundColour(wx.BLACK)
 
@@ -351,10 +363,13 @@ class MainFrame(wx.Frame):
         side_layout.Add(self.select_in_square_button, flag=wx.EXPAND)
         side_layout.Add(self.select_in_vertical_button, flag=wx.EXPAND)
         side_layout.Add(self.select_in_horizontal_button, flag=wx.EXPAND)
+        side_layout.Add(self.select_in_cross_button, flag=wx.EXPAND)
         side_layout.Add(self.compute_button_1, flag=wx.EXPAND)
         side_layout.Add(self.compute_button_2, flag=wx.EXPAND)
         side_layout.Add(self.compute_button_3, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_4, flag=wx.EXPAND)
         side_layout.Add(self.compute_auto_button, flag=wx.EXPAND)
+        side_layout.Add(self.compute_auto_cross_button, flag=wx.EXPAND)
         self.side_panel.SetSizer(side_layout)
 
         ## base
@@ -389,14 +404,20 @@ class MainFrame(wx.Frame):
             event=wx.EVT_BUTTON, handler=self.click_select_in_vertical_button)
         self.select_in_horizontal_button.Bind(
             event=wx.EVT_BUTTON, handler=self.click_select_in_horizontal_button)
+        self.select_in_cross_button.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_select_in_cross_button)
         self.compute_button_1.Bind(
             event=wx.EVT_BUTTON, handler=self.click_compute_button_1)
         self.compute_button_2.Bind(
             event=wx.EVT_BUTTON, handler=self.click_compute_button_2)
         self.compute_button_3.Bind(
             event=wx.EVT_BUTTON, handler=self.click_compute_button_3)
+        self.compute_button_4.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_4)
         self.compute_auto_button.Bind(
             event=wx.EVT_BUTTON, handler=self.click_auto_compute_button)
+        self.compute_auto_cross_button.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_auto_cross_compute_button)
 
     def click_button(self, _):
         """click button"""
@@ -442,6 +463,14 @@ class MainFrame(wx.Frame):
         self.update_status()
         print('complete to select in horizontal')
 
+    def click_select_in_cross_button(self, _):
+        """click select in cross button"""
+        self.data_model.start_turn()
+        self.data_model.select_from_candidate_in_cross()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to select in cross')
+
     def click_compute_button_1(self, _):
         """click compute button1"""
         self.data_model.start_turn()
@@ -466,6 +495,14 @@ class MainFrame(wx.Frame):
         self.update_status()
         print('complete to compute button 3')
 
+    def click_compute_button_4(self, _):
+        """click compute button4"""
+        self.data_model.start_turn()
+        self.data_model.compute_cross_candidate()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 4')
+
     def click_auto_compute_button(self, _):
         """click auto compute button"""
         self.data_model.start_turn()
@@ -489,6 +526,48 @@ class MainFrame(wx.Frame):
             while True:
                 self.data_model.start_turn()
                 self.data_model.select_from_candidate_in_horizontal()
+                if not self.data_model.is_changed():
+                    break
+
+            # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
+            if count >= 50:
+                wx.MessageBox('問題を解くことができませんでした。')
+                break
+
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to auto computed')
+        print(f'Turn Count: {count}')
+
+    def click_auto_cross_compute_button(self, _):
+        """click auto cross compute button"""
+        self.data_model.start_turn()
+        count = 0
+        while not self.data_model.check_to_complete():
+            count += 1
+            self.data_model.compute_square_candidate()
+            self.data_model.compute_horizontal_candidate()
+            self.data_model.compute_vertical_candidate()
+            self.data_model.compute_cross_candidate()
+            self.data_model.select_from_candidate()
+            while True:
+                self.data_model.start_turn()
+                self.data_model.select_from_candidate_in_square()
+                if not self.data_model.is_changed():
+                    break
+            while True:
+                self.data_model.start_turn()
+                self.data_model.select_from_candidate_in_vertical()
+                if not self.data_model.is_changed():
+                    break
+            while True:
+                self.data_model.start_turn()
+                self.data_model.select_from_candidate_in_horizontal()
+                if not self.data_model.is_changed():
+                    break
+            while True:
+                self.data_model.start_turn()
+                self.data_model.select_from_candidate_in_cross()
                 if not self.data_model.is_changed():
                     break
 
@@ -580,15 +659,15 @@ def main():
     # 各列を数字のみの文字列で設定します。
     # 空白は0として設定します。
     base_data = [
-        '000000007',
-        '026750039',
-        '000009010',
-        '600000003',
-        '000060408',
-        '400000070',
-        '042900001',
-        '360020084',
-        '580040300',
+        '000700000',
+        '500100090',
+        '000000080',
+        '000000060',
+        '010000007',
+        '400300001',
+        '070506003',
+        '000092000',
+        '000000006',
     ]
     base_data = [[int(value) for value in list(row)] for row in base_data]
     base_data = [[int(v) for v in list(row)] for row in base_data]
