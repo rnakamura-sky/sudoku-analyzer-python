@@ -2,7 +2,7 @@
 """ Sudoku """
 import wx
 
-from model import DataModel
+from models import DataModel
 from input_dialog import InputDialog
 import utils as utils
 
