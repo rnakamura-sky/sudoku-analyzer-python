@@ -337,7 +337,7 @@ class DataModel:
     def get_horizontal_groups(self) -> List[List[HorizontalGroupModel]]:
         """get horizontal groups"""
         return self.horizontal_groups
-    
+
     def get_cross_groups(self) -> List[List[CrossGroupModel]]:
         """ get cross groups"""
         return self.cross_groups

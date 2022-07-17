@@ -4,7 +4,7 @@ import wx
 
 from model import DataModel
 from input_dialog import InputDialog
-import utils
+import utils as utils
 
 class CellPanel(wx.Panel):
     """CellView"""
@@ -642,32 +642,19 @@ class MainFrame(wx.Frame):
 
 def main():
     """Main"""
-    # Data
-    # 設定する時のテンプレートとして使用してください。
-    base_data = [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-    ]
 
     # 各列を数字のみの文字列で設定します。
     # 空白は0として設定します。
     base_data = [
-        '000700000',
-        '500100090',
-        '000000080',
-        '000000060',
-        '010000007',
-        '400300001',
-        '070506003',
-        '000092000',
-        '000000006',
+        '000000024',
+        '000610008',
+        '001050006',
+        '040000005',
+        '000030080',
+        '305000401',
+        '008000002',
+        '070000003',
+        '000000090',
     ]
     base_data = [[int(value) for value in list(row)] for row in base_data]
     base_data = [[int(v) for v in list(row)] for row in base_data]

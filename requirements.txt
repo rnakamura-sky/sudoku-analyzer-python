@@ -2,3 +2,4 @@ numpy==1.21.6
 Pillow==9.1.1
 six==1.16.0
 wxPython==4.1.1
+pytest==7.1.2
