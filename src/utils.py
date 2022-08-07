@@ -27,6 +27,29 @@ def check_input_data(data: str) -> bool:
     else:
         return False
 
+def check_input_group(data: str) -> bool:
+    """文字列データを入力入力データに変換できるかチェックする
+
+    チェックは正規表現でチェックするのみとします。
+    """
+    text = (
+        r'^[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+        r'[1-9]{9}\n{0,1}'
+    )
+    pattern = re.compile(text)
+    matcher = pattern.match(data)
+    if matcher:
+        return True
+    else:
+        return False
+
 def string2data(str_data:str) -> List[List[int]]:
     """string to data"""
     text = str_data

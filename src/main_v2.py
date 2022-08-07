@@ -328,22 +328,55 @@ class MainFrame(wx.Frame):
             parent=self.side_panel,
             label='クロスで候補が絞られているものを選択'
         )
-        self.compute_button_1 = wx.Button(
+        # self.compute_button_1 = wx.Button(
+        #     parent=self.side_panel,
+        #     label='正方形内での候補計算'
+        # )
+        # self.compute_button_2 = wx.Button(
+        #     parent=self.side_panel,
+        #     label='横グループでの候補計算'
+        # )
+        # self.compute_button_3 = wx.Button(
+        #     parent=self.side_panel,
+        #     label='縦グループでの候補計算'
+        # )
+        # self.compute_button_4 = wx.Button(
+        #     parent=self.side_panel,
+        #     label='クロスグループでの候補計算'
+        # )
+        self.compute_button_5 = wx.Button(
             parent=self.side_panel,
-            label='正方形内での候補計算'
+            label='SquareグループとCellとの関係'
         )
-        self.compute_button_2 = wx.Button(
+        self.compute_button_6 = wx.Button(
             parent=self.side_panel,
-            label='横グループでの候補計算'
+            label='PazzleグループとCellとの関係'
         )
-        self.compute_button_3 = wx.Button(
+        self.compute_button_7 = wx.Button(
             parent=self.side_panel,
-            label='縦グループでの候補計算'
+            label='普通のナンプレ候補が二つの処理'
         )
-        self.compute_button_4 = wx.Button(
+        self.compute_button_8 = wx.Button(
             parent=self.side_panel,
-            label='クロスグループでの候補計算'
+            label='クロスのナンプレ候補が二つの処理'
         )
+        self.compute_button_9 = wx.Button(
+            parent=self.side_panel,
+            label='ジグソーのナンプレ候補が二つの処理'
+        )
+        self.compute_button_10 = wx.Button(
+            parent=self.side_panel,
+            label='スクエアが決まる候補の処理'
+        )
+        self.compute_button_11 = wx.Button(
+            parent=self.side_panel,
+            label='スクエアが決まる候補の処理(クロス)'
+        )
+        self.compute_button_12 = wx.Button(
+            parent=self.side_panel,
+            label='スクエアが決まる候補の処理(ジグソー)'
+        )
+
         self.compute_auto_button = wx.Button(
             parent=self.side_panel,
             label='全自動計算'
@@ -373,10 +406,18 @@ class MainFrame(wx.Frame):
         side_layout.Add(self.select_in_vertical_button, flag=wx.EXPAND)
         side_layout.Add(self.select_in_horizontal_button, flag=wx.EXPAND)
         side_layout.Add(self.select_in_cross_button, flag=wx.EXPAND)
-        side_layout.Add(self.compute_button_1, flag=wx.EXPAND)
-        side_layout.Add(self.compute_button_2, flag=wx.EXPAND)
-        side_layout.Add(self.compute_button_3, flag=wx.EXPAND)
-        side_layout.Add(self.compute_button_4, flag=wx.EXPAND)
+        # side_layout.Add(self.compute_button_1, flag=wx.EXPAND)
+        # side_layout.Add(self.compute_button_2, flag=wx.EXPAND)
+        # side_layout.Add(self.compute_button_3, flag=wx.EXPAND)
+        # side_layout.Add(self.compute_button_4, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_5, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_6, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_7, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_8, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_9, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_10, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_11, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_12, flag=wx.EXPAND)
         side_layout.Add(self.compute_auto_button, flag=wx.EXPAND)
         side_layout.Add(self.compute_auto_cross_button, flag=wx.EXPAND)
         side_layout.Add(self.compute_auto_pazzle_button, flag=wx.EXPAND)
@@ -421,14 +462,30 @@ class MainFrame(wx.Frame):
             event=wx.EVT_BUTTON, handler=self.click_select_in_horizontal_button)
         self.select_in_cross_button.Bind(
             event=wx.EVT_BUTTON, handler=self.click_select_in_cross_button)
-        self.compute_button_1.Bind(
-            event=wx.EVT_BUTTON, handler=self.click_compute_button_1)
-        self.compute_button_2.Bind(
-            event=wx.EVT_BUTTON, handler=self.click_compute_button_2)
-        self.compute_button_3.Bind(
-            event=wx.EVT_BUTTON, handler=self.click_compute_button_3)
-        self.compute_button_4.Bind(
-            event=wx.EVT_BUTTON, handler=self.click_compute_button_4)
+        # self.compute_button_1.Bind(
+        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_1)
+        # self.compute_button_2.Bind(
+        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_2)
+        # self.compute_button_3.Bind(
+        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_3)
+        # self.compute_button_4.Bind(
+        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_4)
+        self.compute_button_5.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_5)
+        self.compute_button_6.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_6)
+        self.compute_button_7.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_7)
+        self.compute_button_8.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_8)
+        self.compute_button_9.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_9)
+        self.compute_button_10.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_10)
+        self.compute_button_11.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_11)
+        self.compute_button_12.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_12)
         self.compute_auto_button.Bind(
             event=wx.EVT_BUTTON, handler=self.click_auto_compute_button)
         self.compute_auto_cross_button.Bind(
@@ -520,6 +577,70 @@ class MainFrame(wx.Frame):
         self.update_status()
         print('complete to compute button 4')
 
+    def click_compute_button_5(self, _):
+        """click compute button5"""
+        self.data_model.start_turn()
+        self.data_model.select_other_squares()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 5')
+
+    def click_compute_button_6(self, _):
+        """click compute button6"""
+        self.data_model.start_turn()
+        self.data_model.select_other_pazzles()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 6')
+
+    def click_compute_button_7(self, _):
+        """click compute button  7"""
+        self.data_model.start_turn()
+        self.data_model.check_pairs_square()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 7')
+
+    def click_compute_button_8(self, _):
+        """click compute button  8"""
+        self.data_model.start_turn()
+        self.data_model.check_pairs_cross()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 8')
+
+    def click_compute_button_9(self, _):
+        """click compute button  9"""
+        self.data_model.start_turn()
+        self.data_model.check_pairs_pazzle()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 9')
+
+    def click_compute_button_10(self, _):
+        """click compute button 10"""
+        self.data_model.start_turn()
+        self.data_model.compute_others_square()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 10')
+
+    def click_compute_button_11(self, _):
+        """click compute button 11"""
+        self.data_model.start_turn()
+        self.data_model.compute_others_cross()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 11')
+
+    def click_compute_button_12(self, _):
+        """click compute button 12"""
+        self.data_model.start_turn()
+        self.data_model.compute_others_pazzle()
+        self.main_component.update_numbers()
+        self.update_status()
+        print('complete to compute button 12')
+
     def click_auto_compute_button(self, _):
         """click auto compute button"""
         self.data_model.start_turn()
@@ -545,6 +666,8 @@ class MainFrame(wx.Frame):
                 self.data_model.select_from_candidate_in_horizontal()
                 if not self.data_model.is_changed():
                     break
+            # self.data_model.start_turn()
+            # self.data_model.select_other_squares()
 
             # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
             if count >= 50:
@@ -587,6 +710,8 @@ class MainFrame(wx.Frame):
                 self.data_model.select_from_candidate_in_cross()
                 if not self.data_model.is_changed():
                     break
+            # self.data_model.start_turn()
+            # self.data_model.select_other_squares()
 
             # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
             if count >= 50:

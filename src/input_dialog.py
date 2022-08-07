@@ -4,7 +4,10 @@ import wx
 
 import utils
 
-class InputDialog(wx.Dialog):
+
+
+
+class BaseInputDialog(wx.Dialog):
     """Input Dialog"""
     def __init__(self, *args, init_value:str=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,7 +35,7 @@ class InputDialog(wx.Dialog):
     def click_button(self, _):
         """click button"""
         _text = self.get_text()
-        if utils.check_input_data(_text):
+        if self.validate_method(_text):
             utils.string2data(_text)
 
             self.result = True
@@ -47,3 +50,19 @@ class InputDialog(wx.Dialog):
     def get_result(self):
         """get result"""
         return self.result
+
+    def validate_method(self, text) -> bool:
+        """validate method"""
+        raise NotImplementedError()
+
+class InputDialog(BaseInputDialog):
+    """Input Dialog"""
+    def validate_method(self, text) -> bool:
+        """validate method"""
+        return utils.check_input_data(text)
+
+class GroupInputDialog(BaseInputDialog):
+    """Group Input Dialog"""
+    def validate_method(self, text) -> bool:
+        """validate method"""
+        return utils.check_input_group(text)
