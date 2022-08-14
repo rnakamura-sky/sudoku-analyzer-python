@@ -273,3 +273,42 @@ def test_group_pairs_2():
     assert data[6].get_value() == 7
     assert data[7].get_value() == 6
     assert data[8].get_candidates() == [True, False, False, False, False, False, False, True, True]
+
+
+def create_candidate(index_list):
+    """create candidate"""
+    candidate = []
+    for i in range(9):
+        number = i + 1
+        if number in index_list:
+            candidate.append(True)
+        else:
+            candidate.append(False)
+    return candidate
+
+def test_decrease_candidate_in_group():
+    """decrease candidate in group"""
+    data = []
+    status_model = models.StatusModel()
+    data.append(create_cell(0, status_model, [5, 6]))
+    data.append(create_cell(0, status_model, [2, 5, 6, 7]))
+    data.append(create_cell(4, status_model))
+    data.append(create_cell(0, status_model, [6, 9]))
+    data.append(create_cell(1, status_model))
+    data.append(create_cell(0, status_model, [2, 6, 7, 8, 9]))
+    data.append(create_cell(3, status_model))
+    data.append(create_cell(0, status_model, [5, 6, 9]))
+    data.append(create_cell(0, status_model, [6, 8, 9]))
+
+    group = models.BaseGroupModel(group_id=1, data=data)
+    group.check_pairs_in_group()
+
+    assert data[0].get_candidates() == create_candidate([5, 6])
+    assert data[1].get_candidates() == create_candidate([2, 7])
+    assert data[2].get_value() == 4
+    assert data[3].get_candidates() == create_candidate([6, 9])
+    assert data[4].get_value() == 1
+    assert data[5].get_candidates() == create_candidate([2, 7])
+    assert data[6].get_value() == 3
+    assert data[7].get_candidates() == create_candidate([5, 6, 9])
+    assert data[8].get_candidates() == create_candidate([6, 8, 9])

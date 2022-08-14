@@ -225,8 +225,8 @@ class CellModel:
     def get_group(self, group_name):
         """get group"""
         group_id = self.groups.get(group_name)
-        if group_id is None:
-            raise ValueError()
+        # if group_id is None:
+        #     raise ValueError()
         return group_id
 
 
@@ -342,6 +342,50 @@ class BaseGroupModel:
                 if group_id != temp_group_id:
                     return None
         return group_id
+
+    def get_candidate_number_list(self, number):
+        """get candidate number list"""
+        result = []
+        for cell in self.data:
+            if cell.get_value() == number:
+                return None
+            elif cell.get_value() > 0:
+                result.append(False)
+            else:
+                candidate = cell.get_candidate(number)
+                result.append(candidate)
+        return result
+
+    def check_pairs_in_group(self):
+        """check pairs in group"""
+        temp_list = dict()
+        for i in range(9):
+            number = i + 1
+            check_list = self.get_candidate_number_list(number)
+            # print(check_list)
+            if check_list is None:
+                continue
+            if sum(check_list) != 2:
+                continue
+            temp_list[number] = check_list
+        # print(temp_list)
+        pairs = dict()
+        for key_1, value_1 in temp_list.items():
+            for key_2, value_2 in temp_list.items():
+                if key_1 >= key_2:
+                    continue
+                check_count = sum([v1 == v2 for v1, v2 in zip(value_1, value_2)])
+                if check_count == 9:
+                    pairs[(key_1, key_2)] = value_1
+        # print(pairs)
+        for numbers, values in pairs.items():
+            for index, bool_value in enumerate(values):
+                if bool_value:
+                    for number in range(1, 10):
+                        if number in numbers:
+                            continue
+                        self.data[index].set_candidate(number, False)
+
 
 class SquareGroupModel(BaseGroupModel):
     """SquareModel"""
@@ -722,6 +766,8 @@ class DataModel:
                             group_id = cell.get_group(to_group_name)
                             if group_id == only_id:
                                 c_group_id = cell.get_group(from_group_name)
+                                if c_group_id is None:
+                                    continue
                                 if c_index != c_group_id:
                                     cell.set_candidate(number, False)
 
@@ -758,6 +804,35 @@ class DataModel:
                                 if h_index != h_group_id:
                                     cell.set_candidate(number, False)
 
+    def check_pairs_in_group_normal(self):
+        """check pairs in group normal"""
+        for hgroup in self.horizontal_groups:
+            hgroup.check_pairs_in_group()
+        for vgroup in self.vertical_groups:
+            vgroup.check_pairs_in_group()
+        for sgroup in self.square_groups:
+            sgroup.check_pairs_in_group()
+
+    def check_pairs_in_group_cross(self):
+        """check pairs in group normal"""
+        for hgroup in self.horizontal_groups:
+            hgroup.check_pairs_in_group()
+        for vgroup in self.vertical_groups:
+            vgroup.check_pairs_in_group()
+        for sgroup in self.square_groups:
+            sgroup.check_pairs_in_group()
+        for cgroup in self.cross_groups:
+            cgroup.check_pairs_in_group()
+
+    def check_pairs_in_group_jigsaw(self):
+        """check pairs in group normal"""
+        for hgroup in self.horizontal_groups:
+            hgroup.check_pairs_in_group()
+        for vgroup in self.vertical_groups:
+            vgroup.check_pairs_in_group()
+        for pgroup in self.pazzle_groups:
+            pgroup.check_pairs_in_group()
+
     def debug_print(self, only_one:bool=False) -> None:
         """デバッグとして値を確認するための出力処理"""
         index = 0
@@ -784,3 +859,77 @@ class DataModel:
     def start_turn(self) -> None:
         """処理開始前に呼ぶ処理"""
         return self.status_model.turn_start()
+
+    def auto_complite_normal(self, max_turn=50) -> bool:
+        """自動計算"""
+        result = False
+        for _ in range(max_turn):
+            self.compute_square_candidate()
+            self.compute_horizontal_candidate()
+            self.compute_vertical_candidate()
+
+            self.select_from_candidate_in_square()
+            self.select_from_candidate_in_horizontal()
+            self.select_from_candidate_in_vertical()
+
+            self.select_other_squares()
+
+            self.check_pairs_square()
+            self.compute_others_square()
+            self.check_pairs_in_group_normal()
+
+            self.select_from_candidate()
+            result = self.check_to_complete()
+            if result:
+                break
+        return result
+
+    def auto_complite_cross(self, max_turn=50) -> bool:
+        """自動計算"""
+        result = False
+        for _ in range(max_turn):
+            self.compute_square_candidate()
+            self.compute_horizontal_candidate()
+            self.compute_vertical_candidate()
+            self.compute_cross_candidate()
+
+            self.select_from_candidate_in_square()
+            self.select_from_candidate_in_horizontal()
+            self.select_from_candidate_in_vertical()
+            self.select_from_candidate_in_cross()
+
+            self.select_other_squares()
+
+            self.check_pairs_cross()
+            self.compute_others_cross()
+            self.check_pairs_in_group_cross()
+
+            self.select_from_candidate()
+            result = self.check_to_complete()
+            if result:
+                break
+        return result
+
+    def auto_complite_jigsaw(self, max_turn=50) -> bool:
+        """自動計算"""
+        result = False
+        for _ in range(max_turn):
+            self.compute_pazzle_candidate()
+            self.compute_horizontal_candidate()
+            self.compute_vertical_candidate()
+
+            self.select_from_candidate_in_pazzle()
+            self.select_from_candidate_in_horizontal()
+            self.select_from_candidate_in_vertical()
+
+            self.select_other_pazzles()
+
+            self.check_pairs_pazzle()
+            self.compute_others_pazzle()
+            self.check_pairs_in_group_jigsaw()
+
+            self.select_from_candidate()
+            result = self.check_to_complete()
+            if result:
+                break
+        return result

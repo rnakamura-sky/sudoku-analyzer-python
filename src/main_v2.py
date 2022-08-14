@@ -650,7 +650,6 @@ class MainFrame(wx.Frame):
             self.data_model.compute_square_candidate()
             self.data_model.compute_horizontal_candidate()
             self.data_model.compute_vertical_candidate()
-            self.data_model.select_from_candidate()
             while True:
                 self.data_model.start_turn()
                 self.data_model.select_from_candidate_in_square()
@@ -666,8 +665,14 @@ class MainFrame(wx.Frame):
                 self.data_model.select_from_candidate_in_horizontal()
                 if not self.data_model.is_changed():
                     break
-            # self.data_model.start_turn()
-            # self.data_model.select_other_squares()
+
+            self.data_model.select_other_squares()
+
+            self.data_model.check_pairs_square()
+            self.data_model.compute_others_square()
+            self.data_model.check_pairs_in_group_normal()
+
+            self.data_model.select_from_candidate()
 
             # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
             if count >= 50:
@@ -689,7 +694,7 @@ class MainFrame(wx.Frame):
             self.data_model.compute_horizontal_candidate()
             self.data_model.compute_vertical_candidate()
             self.data_model.compute_cross_candidate()
-            self.data_model.select_from_candidate()
+
             while True:
                 self.data_model.start_turn()
                 self.data_model.select_from_candidate_in_square()
@@ -710,8 +715,14 @@ class MainFrame(wx.Frame):
                 self.data_model.select_from_candidate_in_cross()
                 if not self.data_model.is_changed():
                     break
-            # self.data_model.start_turn()
-            # self.data_model.select_other_squares()
+
+            self.data_model.select_other_squares()
+
+            self.data_model.check_pairs_cross()
+            self.data_model.compute_others_cross()
+            self.data_model.check_pairs_in_group_cross()
+
+            self.data_model.select_from_candidate()
 
             # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
             if count >= 50:
@@ -733,7 +744,6 @@ class MainFrame(wx.Frame):
             self.data_model.compute_pazzle_candidate()
             self.data_model.compute_horizontal_candidate()
             self.data_model.compute_vertical_candidate()
-            self.data_model.select_from_candidate()
             while True:
                 self.data_model.start_turn()
                 # self.data_model.select_from_candidate_in_square()
@@ -750,6 +760,15 @@ class MainFrame(wx.Frame):
                 self.data_model.select_from_candidate_in_horizontal()
                 if not self.data_model.is_changed():
                     break
+
+            self.data_model.select_other_pazzles()
+
+            self.data_model.check_pairs_pazzle()
+            self.data_model.compute_others_pazzle()
+            self.data_model.check_pairs_in_group_jigsaw()
+
+            self.data_model.select_from_candidate()
+
             # TODO 現在の処理でクリアできない可能性が0でないため、50を上限として処理を終了させる
             if count >= 50:
                 wx.MessageBox('問題を解くことができませんでした。')
