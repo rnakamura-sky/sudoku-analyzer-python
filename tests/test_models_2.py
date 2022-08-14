@@ -1,11 +1,10 @@
 # coding: utf-8
 """"問題を解けるか確認"""
-import os
 import pathlib
 
 import pytest
 
-import models_v2 as models
+import models
 import utils
 
 
