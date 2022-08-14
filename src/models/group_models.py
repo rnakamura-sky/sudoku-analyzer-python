@@ -1,8 +1,6 @@
 # coding: utf-8
 """group models"""
-from typing import List
-
-from pyparsing import Optional
+from typing import List, Optional
 
 import models
 
