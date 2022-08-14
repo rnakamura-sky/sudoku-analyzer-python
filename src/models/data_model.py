@@ -7,7 +7,7 @@ import models
 
 class DataModel:
     """DataModel"""
-    def __init__(self, data: List[List[int]]):
+    def __init__(self, data: List[List[int]]) -> None:
         # ステータス用のモデルクラス設定
         self.init_data = data
 
@@ -23,7 +23,7 @@ class DataModel:
 
         self.initialize(data)
 
-    def initialize(self, init_data: List[List[int]]):
+    def initialize(self, init_data: List[List[int]]) -> None:
         """データの初期設定"""
         self.init_data = init_data
         self.cells = [
@@ -59,7 +59,7 @@ class DataModel:
         self.cross_groups.append(models.CrossGroupModel(1, data))
         self.status_model.turn_start()
 
-    def update(self, init_data: List[List[int]]):
+    def update(self, init_data: List[List[int]]) -> None:
         """更新"""
         self.init_data = init_data
         for row_i, row_values in enumerate(init_data):
@@ -68,11 +68,11 @@ class DataModel:
 
         self.status_model.turn_start()
 
-    def reset(self):
+    def reset(self) -> None:
         """最初の状態(初期データ)に戻す"""
         self.update(self.init_data)
 
-    def set_pazzle_group(self, group):
+    def set_pazzle_group(self, group:List[List[int]]) -> None:
         """ジグソーグループを設定"""
         self.pazzle_groups = []
         datas = [[] for _ in range(9)]
@@ -93,7 +93,7 @@ class DataModel:
                     return False
         return True
 
-    def get_init_data(self):
+    def get_init_data(self) -> List[List[int]]:
         """get init data"""
         return self.init_data
 
@@ -164,14 +164,11 @@ class DataModel:
                 row = stats['row']
                 col = stats['col']
                 if row is not None:
-                    # print(f'test group:{group_id}, number:{number}, row:{row}')
                     for row_cells in self.cells:
                         for cell in row_cells:
                             if cell.get_row() == row and cell.get_group('square') != group_id:
                                 cell.set_candidate(number, False)
                 if col is not None:
-                    # if group_id == 6:
-                        # print(f'test group:{group_id}, number:{number}, col:{col}')
                     for row_cells in self.cells:
                         for cell in row_cells:
                             if cell.get_col() == col and cell.get_group('square') != group_id:
@@ -291,7 +288,7 @@ class DataModel:
                                 if h_index != h_group_id:
                                     cell.set_candidate(number, False)
 
-    def compute_others_cross(self):
+    def compute_others_cross(self) -> None:
         """compute others square"""
         self.compute_others_square()
         from_group_name = 'cross'
@@ -312,7 +309,7 @@ class DataModel:
                                 if c_index != c_group_id:
                                     cell.set_candidate(number, False)
 
-    def compute_others_pazzle(self):
+    def compute_others_pazzle(self) -> None:
         """compute others square"""
         from_group_name = 'vertical'
         to_group_name = 'pazzle'
@@ -345,7 +342,7 @@ class DataModel:
                                 if h_index != h_group_id:
                                     cell.set_candidate(number, False)
 
-    def check_pairs_in_group_normal(self):
+    def check_pairs_in_group_normal(self) -> None:
         """check pairs in group normal"""
         for hgroup in self.horizontal_groups:
             hgroup.check_pairs_in_group()
@@ -354,7 +351,7 @@ class DataModel:
         for sgroup in self.square_groups:
             sgroup.check_pairs_in_group()
 
-    def check_pairs_in_group_cross(self):
+    def check_pairs_in_group_cross(self) -> None:
         """check pairs in group normal"""
         for hgroup in self.horizontal_groups:
             hgroup.check_pairs_in_group()
@@ -365,7 +362,7 @@ class DataModel:
         for cgroup in self.cross_groups:
             cgroup.check_pairs_in_group()
 
-    def check_pairs_in_group_jigsaw(self):
+    def check_pairs_in_group_jigsaw(self) -> None:
         """check pairs in group normal"""
         for hgroup in self.horizontal_groups:
             hgroup.check_pairs_in_group()

@@ -11,7 +11,7 @@ class StatusModel:
     TODO: シングルトンにしてもよいかなと思ったんですが、まずは引数で渡して実装しようと思います。
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """__init__"""
         self.__changed = False
 

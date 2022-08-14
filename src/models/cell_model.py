@@ -1,14 +1,13 @@
 # coding: utf-8
 """cell model"""
-from typing import List
+from typing import List, Optional
 
 import models
 
 class CellModel:
     """CellModel"""
 
-    def __init__(self, value: int, status_model: models.StatusModel, row=None, col=None):
-        # self.value = value
+    def __init__(self, value: int, status_model: models.StatusModel, row=None, col=None) -> None:
         self.value_model = models.ValueModel(value)
         self.candidates = models.CandidatesModel(value)
         self.status_model = status_model
@@ -16,8 +15,11 @@ class CellModel:
         self.col = col
         self.groups = dict()
 
-    def reset(self):
-        """リセットする"""
+    def reset(self) -> None:
+        """リセットする
+
+        値は設定されず、すべて候補となっている状態にする。
+        """
         self.value_model.reset()
         self.candidates.reset(True)
 
@@ -74,25 +76,26 @@ class CellModel:
         """候補の中で一番小さい値を取得します。"""
         return self.candidates.get_narrow_down()
 
-    def get_row(self):
-        """get row"""
+    def get_row(self) -> int:
+        """セルの行を取得"""
         if self.row is None:
             raise ValueError()
         return self.row
 
-    def get_col(self):
-        """get col"""
+    def get_col(self) -> int:
+        """セルの列を取得"""
         if self.col is None:
             raise ValueError()
         return self.col
 
-    def set_group(self, group_name:str, group_id:id):
-        """set group"""
+    def set_group(self, group_name:str, group_id:int) -> None:
+        """指定されたグループのidを設定"""
         self.groups[group_name] = group_id
 
-    def get_group(self, group_name):
-        """get group"""
+    def get_group(self, group_name) -> Optional[int]:
+        """指定されたグループの所属idを取得
+
+        設定されていない場合はNoneが返る
+        """
         group_id = self.groups.get(group_name)
-        # if group_id is None:
-        #     raise ValueError()
         return group_id

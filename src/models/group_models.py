@@ -2,6 +2,8 @@
 """group models"""
 from typing import List
 
+from pyparsing import Optional
+
 import models
 
 
@@ -17,16 +19,14 @@ class BaseGroupModel:
 
     def get_cell_models(self) -> List[List[int]]:
         """セルのデータを取得します。"""
-        # cells = [[0 for _ in range(3)] for _ in range(3)]
         cells = [0 for _ in range(3) for _ in range(3)]
         for i in range(3):
             for j in range(3):
-                # cells[i][j] = self.data[3 * i + j]
                 cells[3 * i + j] = self.data[3 * i + j]
         return cells
 
-    def get_group_id(self):
-        """get group id"""
+    def get_group_id(self) -> int:
+        """所属するグループIdを返す"""
         return self.group_id
 
     def compute_candidate(self) -> None:
@@ -43,8 +43,6 @@ class BaseGroupModel:
                             pass
                         else:
                             check_cell.set_candidate(value, False)
-            else:
-                pass
 
     def select_from_candidate_in_group(self) -> None:
         """グループ内で候補として一つにしか設定されていない候補数字を値として設定する処理"""
@@ -70,7 +68,7 @@ class BaseGroupModel:
             if not is_exist and count == 1:
                 handle.set_value(i + 1)
 
-    def check_pairs(self):
+    def check_pairs(self) -> None:
         """2つのcellで同じ2つの数字候補蚤の場合、他の場所に設定されることはないのでその処理"""
         cells = []
         pairs = []
@@ -102,7 +100,7 @@ class BaseGroupModel:
                 for value in values:
                     cell.set_candidate(value, False)
 
-    def calc_only_id(self, group_name, number):
+    def calc_only_id(self, group_name:str, number:int) -> Optional[int]:
         """候補の値がgroup_nameで指定されたグループで一意に決まるか"""
         group_id = None
         for cell in self.data:
@@ -118,7 +116,7 @@ class BaseGroupModel:
                     return None
         return group_id
 
-    def get_candidate_number_list(self, number):
+    def get_candidate_number_list(self, number:int) -> Optional[List[bool]]:
         """get candidate number list"""
         result = []
         for cell in self.data:
@@ -131,19 +129,17 @@ class BaseGroupModel:
                 result.append(candidate)
         return result
 
-    def check_pairs_in_group(self):
+    def check_pairs_in_group(self) -> None:
         """check pairs in group"""
         temp_list = dict()
         for i in range(9):
             number = i + 1
             check_list = self.get_candidate_number_list(number)
-            # print(check_list)
             if check_list is None:
                 continue
             if sum(check_list) != 2:
                 continue
             temp_list[number] = check_list
-        # print(temp_list)
         pairs = dict()
         for key_1, value_1 in temp_list.items():
             for key_2, value_2 in temp_list.items():
@@ -152,7 +148,6 @@ class BaseGroupModel:
                 check_count = sum([v1 == v2 for v1, v2 in zip(value_1, value_2)])
                 if check_count == 9:
                     pairs[(key_1, key_2)] = value_1
-        # print(pairs)
         for numbers, values in pairs.items():
             for index, bool_value in enumerate(values):
                 if bool_value:
@@ -176,7 +171,6 @@ class SquareGroupModel(BaseGroupModel):
             if cell.get_value() > 0:
                 continue
             candidate = cell.get_candidate(number)
-            # print(f'Candidate group_id:{self.group_id} number:{number} row:{cell.get_row()} col:{cell.get_col()} candidate:{candidate}')
             if candidate:
                 row = cell.get_row()
                 if row not in rows:
@@ -220,7 +214,6 @@ class PazzleGroupModel(BaseGroupModel):
             if cell.get_value() > 0:
                 continue
             candidate = cell.get_candidate(number)
-            # print(f'Candidate group_id:{self.group_id} number:{number} row:{cell.get_row()} col:{cell.get_col()} candidate:{candidate}')
             if candidate:
                 row = cell.get_row()
                 if row not in rows:

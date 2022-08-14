@@ -1,6 +1,6 @@
 # coding: utf-8
 """candidates model"""
-from typing import List
+from typing import List, Optional
 
 
 class CandidatesModel:
@@ -8,7 +8,7 @@ class CandidatesModel:
 
     まだどの数字が入るかわからないセルの候補となる数字を管理するためのクラスです。
     """
-    def __init__(self, value:int):
+    def __init__(self, value:int) -> None:
         """__init__
 
         valueはセルの値となります。0~9が入りますが、0の場合は、数字が未設定であるという
@@ -46,7 +46,7 @@ class CandidatesModel:
             return True
         return False
 
-    def get_narrow_down(self) -> int:
+    def get_narrow_down(self) -> Optional[int]:
         """候補となる値を取得するための処理
 
         候補の中で一番小さい値を返す(一つに絞られている場合はその一つが返る)
