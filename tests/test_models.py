@@ -4,6 +4,7 @@ import pytest
 # from models import CellModel
 
 import models
+from models.group_models import BaseGroupModel
 
 
 model_shape_datas = [
@@ -234,7 +235,7 @@ def test_group_pairs_1():
     data.append(create_cell(7, status_model))
     data.append(create_cell(2, status_model))
 
-    group = models.BaseGroupModel(group_id=1, data=data)
+    group = BaseGroupModel(group_id=1, data=data)
     group.check_pairs()
 
     assert data[0].get_candidates() == [True, False, True, False, False, False, False, False, False]
@@ -261,7 +262,7 @@ def test_group_pairs_2():
     data.append(create_cell(6, status_model))
     data.append(create_cell(0, status_model, [1, 5, 8, 9]))
 
-    group = models.BaseGroupModel(group_id=1, data=data)
+    group = BaseGroupModel(group_id=1, data=data)
     group.check_pairs()
 
     assert data[0].get_candidates() == [False, False, False, True, True, False, False, False, False]
@@ -300,7 +301,7 @@ def test_decrease_candidate_in_group():
     data.append(create_cell(0, status_model, [5, 6, 9]))
     data.append(create_cell(0, status_model, [6, 8, 9]))
 
-    group = models.BaseGroupModel(group_id=1, data=data)
+    group = BaseGroupModel(group_id=1, data=data)
     group.check_pairs_in_group()
 
     assert data[0].get_candidates() == create_candidate([5, 6])
