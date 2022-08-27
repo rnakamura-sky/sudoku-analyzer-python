@@ -16,11 +16,11 @@ class DataModel:
         self.cells = None
 
         # create groups
-        self.square_groups = []
-        self.vertical_groups = []
-        self.horizontal_groups = []
-        self.cross_groups = []
-        self.pazzle_groups = []
+        self.square_groups:List[models.SquareGroupModel] = []
+        self.vertical_groups:List[models.VerticalGroupModel] = []
+        self.horizontal_groups:List[models.HorizontalGroupModel] = []
+        self.cross_groups:List[models.CrossGroupModel] = []
+        self.pazzle_groups:List[models.PazzleGroupModel] = []
 
         self.initialize(data)
 
@@ -312,7 +312,9 @@ class DataModel:
                             if group_id == only_id:
                                 c_group_id = cell.get_group(from_group_name)
                                 if c_group_id is None:
-                                    continue
+                                    # グループ指定がない場合は候補をはずすよう修正
+                                    # continue
+                                    cell.set_candidate(number, False)
                                 if c_index != c_group_id:
                                     cell.set_candidate(number, False)
 
