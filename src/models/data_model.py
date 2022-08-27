@@ -116,6 +116,10 @@ class DataModel:
         """ get cross groups"""
         return self.cross_groups
 
+    def get_jigsaw_groups(self) -> List[models.PazzleGroupModel]:
+        """get jigsaw groups"""
+        return self.pazzle_groups
+
     def select_from_candidate(self) -> None:
         """候補が一つに絞られているセルの値を設定する処理"""
         for cell_row in self.cells:

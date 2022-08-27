@@ -23,6 +23,15 @@ def create_data():
 
     return result
 
+def check_group_data(group):
+    """check group data"""
+    data = [cell.get_value() for cell in group.data]
+    set_data = set(data)
+    if len(set_data) == 9:
+        return True
+    else:
+        return False
+
 sample_data = create_data()
 
 @pytest.mark.parametrize(('type_code', 'path', 'flag'), sample_data,
@@ -52,3 +61,19 @@ def test_models(type_code, path, flag):
         result = model.auto_complite_jigsaw()
 
     assert result == flag
+    if flag:
+        for vgroup in model.get_vertical_groups():
+            assert check_group_data(vgroup)
+        for hgroup in model.get_horizontal_groups():
+            assert check_group_data(hgroup)
+        if type_code == 'normal':
+            for sgroup in model.get_square_groups():
+                assert check_group_data(sgroup)
+        elif type_code == 'cross':
+            for sgroup in model.get_square_groups():
+                assert check_group_data(sgroup)
+            for cgroup in model.get_cross_groups():
+                assert check_group_data(cgroup)
+        elif type_code == 'jigsaw':
+            for jgroup in model.get_jigsaw_groups():
+                assert check_group_data(jgroup)
