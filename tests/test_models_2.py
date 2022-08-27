@@ -16,15 +16,18 @@ def create_data():
     for type_path in questions_path.glob('*'):
         type_code = type_path.name
         for path in type_path.glob('*'):
-            result.append([type_code, path])
+            flag = True
+            if str(path.name).endswith('_x.txt'):
+                flag = False
+            result.append([type_code, path, flag])
 
     return result
 
 sample_data = create_data()
 
-@pytest.mark.parametrize(('type_code', 'path'), sample_data,
+@pytest.mark.parametrize(('type_code', 'path', 'flag'), sample_data,
         ids=[''.join([item[0], '-', item[1].name]) for item in sample_data])
-def test_models(type_code, path):
+def test_models(type_code, path, flag):
     """問題が解けるか確認"""
     print()
     with open(path, 'r', encoding='utf-8') as file:
@@ -48,4 +51,4 @@ def test_models(type_code, path):
         model.set_pazzle_group(jigsaw)
         result = model.auto_complite_jigsaw()
 
-    assert result
+    assert result == flag
