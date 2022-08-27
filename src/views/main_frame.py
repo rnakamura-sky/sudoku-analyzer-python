@@ -3,6 +3,7 @@
 import wx
 
 import utils
+import sudoku_writer
 
 import views
 from views.input_dialog import InputDialog, GroupInputDialog
@@ -182,13 +183,24 @@ class MainFrame(wx.Frame):
         menu_update_pazzle = menu.Append(5, 'ジグソーグループを修正')
         menu_bar = wx.MenuBar()
         menu_bar.Append(menu, 'メニュー')
-        self.SetMenuBar(menu_bar)
         self.Bind(wx.EVT_MENU, self.on_reset, menu_init)
         self.Bind(wx.EVT_MENU, self.on_initialize_from_dialog, menu_create)
         self.Bind(wx.EVT_MENU, self.on_update_data, menu_update)
         self.Bind(wx.EVT_MENU, self.on_create_pazzle_group, menu_create_pazzle)
         self.Bind(wx.EVT_MENU, self.on_update_pazzle_group, menu_update_pazzle)
+
+        # 保存用メニュー
+        menu_writer = wx.Menu()
+        menu_writer.AppendSeparator()
+        menu_write_normal = menu_writer.Append(6, 'ノーマルの保存')
+        menu_write_cross = menu_writer.Append(7, 'クロスの保存')
+        menu_write_jigsaw = menu_writer.Append(8, 'ジグソーの保存')
+        self.Bind(wx.EVT_MENU, self.write_normal, menu_write_normal)
+        self.Bind(wx.EVT_MENU, self.write_cross, menu_write_cross)
+        self.Bind(wx.EVT_MENU, self.write_jigsaw, menu_write_jigsaw)
+        menu_bar.Append(menu_writer, '書込')
         
+        self.SetMenuBar(menu_bar)
 
         # Event
         self.side_button.Bind(
@@ -603,3 +615,24 @@ class MainFrame(wx.Frame):
 
     def on_update_pazzle_group(self, _):
         """on update pazzle group"""
+
+    def write_normal(self, _):
+        """write normal"""
+        file_name = sudoku_writer.write('normal', self.data_model.init_data)
+        message = f'保存しました。[{file_name}]'
+        wx.MessageBox(message)
+
+
+    def write_cross(self, _):
+        """write cross"""
+        file_name = sudoku_writer.write('cross', self.data_model.init_data)
+        message = f'保存しました。[{file_name}]'
+        wx.MessageBox(message)
+
+
+    def write_jigsaw(self, _):
+        """write jigsaw"""
+        file_name = sudoku_writer.write('jigsaw', self.data_model.init_data, self.data_model.jigsaw_data)
+        message = f'保存しました。[{file_name}]'
+        wx.MessageBox(message)
+

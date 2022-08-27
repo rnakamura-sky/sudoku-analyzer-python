@@ -10,6 +10,7 @@ class DataModel:
     def __init__(self, data: List[List[int]]) -> None:
         # ステータス用のモデルクラス設定
         self.init_data = data
+        self.jigsaw_data = None
 
         self.status_model = models.StatusModel()
         self.cells = None
@@ -74,6 +75,8 @@ class DataModel:
 
     def set_pazzle_group(self, group:List[List[int]]) -> None:
         """ジグソーグループを設定"""
+        self.jigsaw_data = group
+
         self.pazzle_groups = []
         datas = [[] for _ in range(9)]
         for row, values  in enumerate(group):
