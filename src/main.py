@@ -1,10 +1,23 @@
 # coding: utf-8
 """ Sudoku """
+import logging
+import logging.handlers
+
 import wx
 
 from models import DataModel
 
 import views
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setLevel(logging.INFO)
+
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().addHandler(handler)
+
+logger.info('TEST')
 
 def main():
     """Main"""

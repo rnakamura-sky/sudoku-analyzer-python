@@ -70,22 +70,22 @@ class MainFrame(wx.Frame):
             parent=self.side_panel,
             label='クロスで候補が絞られているものを選択'
         )
-        # self.compute_button_1 = wx.Button(
-        #     parent=self.side_panel,
-        #     label='正方形内での候補計算'
-        # )
-        # self.compute_button_2 = wx.Button(
-        #     parent=self.side_panel,
-        #     label='横グループでの候補計算'
-        # )
-        # self.compute_button_3 = wx.Button(
-        #     parent=self.side_panel,
-        #     label='縦グループでの候補計算'
-        # )
-        # self.compute_button_4 = wx.Button(
-        #     parent=self.side_panel,
-        #     label='クロスグループでの候補計算'
-        # )
+        self.compute_button_1 = wx.Button(
+            parent=self.side_panel,
+            label='正方形内での候補計算'
+        )
+        self.compute_button_2 = wx.Button(
+            parent=self.side_panel,
+            label='横グループでの候補計算'
+        )
+        self.compute_button_3 = wx.Button(
+            parent=self.side_panel,
+            label='縦グループでの候補計算'
+        )
+        self.compute_button_4 = wx.Button(
+            parent=self.side_panel,
+            label='クロスグループでの候補計算'
+        )
         self.compute_button_5 = wx.Button(
             parent=self.side_panel,
             label='SquareグループとCellとの関係'
@@ -148,10 +148,10 @@ class MainFrame(wx.Frame):
         side_layout.Add(self.select_in_vertical_button, flag=wx.EXPAND)
         side_layout.Add(self.select_in_horizontal_button, flag=wx.EXPAND)
         side_layout.Add(self.select_in_cross_button, flag=wx.EXPAND)
-        # side_layout.Add(self.compute_button_1, flag=wx.EXPAND)
-        # side_layout.Add(self.compute_button_2, flag=wx.EXPAND)
-        # side_layout.Add(self.compute_button_3, flag=wx.EXPAND)
-        # side_layout.Add(self.compute_button_4, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_1, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_2, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_3, flag=wx.EXPAND)
+        side_layout.Add(self.compute_button_4, flag=wx.EXPAND)
         side_layout.Add(self.compute_button_5, flag=wx.EXPAND)
         side_layout.Add(self.compute_button_6, flag=wx.EXPAND)
         side_layout.Add(self.compute_button_7, flag=wx.EXPAND)
@@ -215,14 +215,14 @@ class MainFrame(wx.Frame):
             event=wx.EVT_BUTTON, handler=self.click_select_in_horizontal_button)
         self.select_in_cross_button.Bind(
             event=wx.EVT_BUTTON, handler=self.click_select_in_cross_button)
-        # self.compute_button_1.Bind(
-        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_1)
-        # self.compute_button_2.Bind(
-        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_2)
-        # self.compute_button_3.Bind(
-        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_3)
-        # self.compute_button_4.Bind(
-        #     event=wx.EVT_BUTTON, handler=self.click_compute_button_4)
+        self.compute_button_1.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_1)
+        self.compute_button_2.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_2)
+        self.compute_button_3.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_3)
+        self.compute_button_4.Bind(
+            event=wx.EVT_BUTTON, handler=self.click_compute_button_4)
         self.compute_button_5.Bind(
             event=wx.EVT_BUTTON, handler=self.click_compute_button_5)
         self.compute_button_6.Bind(

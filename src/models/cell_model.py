@@ -1,8 +1,13 @@
 # coding: utf-8
 """cell model"""
 from typing import List, Optional
+import logging
 
 import models
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 
 class CellModel:
     """CellModel"""
@@ -51,6 +56,7 @@ class CellModel:
         self.status_model.changed()
         self.value_model.value = value
         if value > 0:
+            logger.info('Set value row:%s, col:%s, value:%s', self.row+1, self.col+1, value)
             self.candidates.reset(False)
         else:
             self.candidates.reset(True)
@@ -66,6 +72,9 @@ class CellModel:
         """
         # TODO:いったん設定したものはすべて変更があったとみなす。
         self.status_model.changed()
+        if not value:
+            if self.candidates.get_candidate(number):
+                logger.info('Set Candidate Off row:%s, col:%s, number:%s', self.row+1, self.col+1, number)
         self.candidates.set_candidate(number, value)
 
     def is_narrow_down(self) -> bool:

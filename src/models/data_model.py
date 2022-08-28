@@ -318,6 +318,31 @@ class DataModel:
                                 if c_index != c_group_id:
                                     cell.set_candidate(number, False)
 
+        from_group_name = 'square'
+        to_group_name = 'cross'
+        for s_index, sgroup in enumerate(self.square_groups):
+            for number in range(1, 10):
+                only_id = sgroup.calc_only_id(to_group_name, number)
+                if only_id is not None:
+                    for rows in self.cells:
+                        for cell in rows:
+                            if cell.get_value() > 0:
+                                continue
+                            group_id = cell.get_group(to_group_name)
+                            if group_id == only_id:
+                                s_group_id = cell.get_group(from_group_name)
+                                if s_group_id is None:
+                                    # グループ指定がない場合は候補をはずすよう修正
+                                    # continue
+                                    cell.set_candidate(number, False)
+                                if s_index != s_group_id:
+                                    cell.set_candidate(number, False)
+                            elif group_id is not None:
+                                s_group_id = cell.get_group(from_group_name)
+                                if cell.get_row() == 4 and cell.get_col() == 4:
+                                    if s_index != s_group_id:
+                                        cell.set_candidate(number, False)
+
     def compute_others_pazzle(self) -> None:
         """compute others square"""
         from_group_name = 'vertical'
@@ -440,10 +465,26 @@ class DataModel:
             self.compute_vertical_candidate()
             self.compute_cross_candidate()
 
-            self.select_from_candidate_in_square()
-            self.select_from_candidate_in_horizontal()
-            self.select_from_candidate_in_vertical()
-            self.select_from_candidate_in_cross()
+            while True:
+                self.start_turn()
+                self.select_from_candidate_in_square()
+                if not self.is_changed():
+                    break
+            while True:
+                self.start_turn()
+                self.select_from_candidate_in_horizontal()
+                if not self.is_changed():
+                    break
+            while True:
+                self.start_turn()
+                self.select_from_candidate_in_vertical()
+                if not self.is_changed():
+                    break
+            while True:
+                self.start_turn()
+                self.select_from_candidate_in_cross()
+                if not self.is_changed():
+                    break
 
             self.select_other_squares()
 

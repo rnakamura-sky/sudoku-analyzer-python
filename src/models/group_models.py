@@ -110,6 +110,9 @@ class BaseGroupModel:
                 temp_group_id = cell.get_group(group_name)
                 if group_id is None:
                     group_id = temp_group_id
+                # group_idが取得できない場合はIdが決まらない扱いとする
+                if temp_group_id is None:
+                    return None
                 if group_id != temp_group_id:
                     return None
         return group_id
